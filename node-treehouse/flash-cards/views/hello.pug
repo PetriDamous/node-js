@@ -1,0 +1,7 @@
+extends layout.pug 
+
+block content 
+    form(action="/hello", method="POST")
+        label(for="student-name") Please enter your name: 
+        input(id="student-name",type="text", name="username" placeholder="Enter name")
+        button(type="submit") Submit

@@ -1,0 +1,21 @@
+extends layout.pug 
+
+block content
+    section#content
+      h2= text  
+
+      if showHint
+        p 
+            i Hint: #{hint}
+           
+      
+      a(href=`/cards/${cardId}?side=${reverseSide}`) #{reverseSide}
+
+      br 
+
+      a(href="/cards") Next Question 
+
+      
+        
+
+    
