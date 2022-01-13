@@ -1,6 +1,6 @@
 const express = require("express");
 const routes = require("./routes");
-const { notFoundError, globalErrorHandler } = require("./helpers");
+const Helper = require("./helpers");
 
 // Challenge. Prevent duplicate quotes from being posted.
 // Challenge. When updating quote check for if data is the shape we want (string, object, etc)
@@ -14,9 +14,9 @@ app.use(express.json());
 app.use("/api", routes);
 
 // Not found middleware error handler
-app.use(notFoundError);
+app.use(Helper.notFoundError);
 
 // Global middleware error handler
-app.use(globalErrorHandler);
+app.use(Helper.globalErrorHandler);
 
 app.listen(3000, () => console.log("Quote API listening on port 3000!"));

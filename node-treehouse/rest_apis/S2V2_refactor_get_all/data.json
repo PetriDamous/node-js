@@ -2,8 +2,8 @@
   "records": [
     {
       "id": 8721,
-      "quote": "We must accept finite disappointment, but we must never lose infinite hope.",
-      "author": "Martin Luther King Jr."
+      "quote": "You show me a capitalist, and I'll show you a bloodsucker.",
+      "author": "Malcom X"
     },
     {
       "id": 5779,
@@ -13,10 +13,10 @@
     {
       "id": 3406,
       "quote": "To succeed, you have to do something and be very bad at it for a while. You have to look bad before you can look really good.",
-      "author": "Barbara DeAngelis"
+      "author": "Buster Douglas"
     },
     {
-      "quote": "What is this",
+      "quote": "What is this!?!?",
       "author": "Barry Burton",
       "id": 2248
     },
@@ -29,6 +29,26 @@
       "quote": "It's not over YET!!!!!",
       "author": "Zero",
       "id": 4494
+    },
+    {
+      "quote": "I hit'em up",
+      "author": "2pac",
+      "id": 4197
+    },
+    {
+      "quote": "I'm the best!!!!",
+      "author": "Toad",
+      "id": 5557
+    },
+    {
+      "quote": "Mother fuck him and John Wayne",
+      "author": "John Wayne",
+      "id": 3022
+    },
+    {
+      "quote": "I am Batman!!!!",
+      "author": "Batman",
+      "id": 1380
     }
   ]
 }

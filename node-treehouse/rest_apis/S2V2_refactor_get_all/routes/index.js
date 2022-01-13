@@ -1,21 +1,14 @@
 const express = require("express");
-const { asyncHandler } = require("../helpers");
-const {
-  getQuotes,
-  getQuote,
-  createQuote,
-  updateQuote,
-  deleteQuote,
-  getRandomQuote,
-} = require("../records");
+const Helper = require("../helpers");
+const Records = require("../records");
 
 const router = express.Router();
 
 // Send a GET request to /quotes to READ a list of quotes
 router.get(
   "/quotes",
-  asyncHandler(async (req, res, next) => {
-    const quotes = await getQuotes();
+  Helper.asyncHandler(async (req, res, next) => {
+    const quotes = await Records.getQuotes();
 
     res.json(quotes);
   })
@@ -24,10 +17,10 @@ router.get(
 // Send a GET request to /quotes/:id to READ(view) a quote
 router.get(
   "/quotes/:id",
-  asyncHandler(async (req, res) => {
+  Helper.asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const quote = await getQuote(id);
+    const quote = await Records.getQuote(id);
 
     if (!quote) {
       return res.status(404).json({ error: "Unable to find quote." });
@@ -40,14 +33,22 @@ router.get(
 // Send a POST request to /quotes to  CREATE a new quote
 router.post(
   "/quotes",
-  asyncHandler(async (req, res) => {
+  Helper.asyncHandler(async (req, res) => {
     const { quote, author } = req.body;
 
     if (!quote || !author) {
-      return res.status(400).json({ error: "Bad request." });
+      return res
+        .status(400)
+        .json({ error: "Quote and author must be provided." });
     }
 
-    const newQuote = await createQuote({ quote, author });
+    const isDuplicate = await Helper.checkForDuplicate(quote, author);
+
+    if (isDuplicate) {
+      return res.status(400).json({ error: "Cannot accept duplicate." });
+    }
+
+    const newQuote = await Records.createQuote({ quote, author });
 
     res.status(201).json(newQuote);
   })
@@ -56,20 +57,28 @@ router.post(
 // Send a PUT request to /quotes/:id to UPDATE (edit) a quote
 router.put(
   "/quotes/:id",
-  asyncHandler(async (req, res) => {
+  Helper.asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const { quote, author } = req.body;
 
-    const currentQuote = await getQuote(id);
+    const currentQuote = await Records.getQuote(id);
 
     if (!currentQuote) {
       return res.status(404).json({ error: "Quote not found." });
     }
 
-    const updatedQuote = { ...currentQuote, quote, author };
+    const isDuplicate = await Helper.checkForDuplicate(quote, author);
 
-    await updateQuote(updatedQuote);
+    if (isDuplicate) {
+      return res.status(400).json({ error: "Cannot accept duplicate." });
+    }
+
+    const updatedProperties = Helper.updateProperties(quote, author);
+
+    const updatedQuote = { ...currentQuote, ...updatedProperties };
+
+    await Records.updateQuote(updatedQuote);
 
     res.status(204).end();
   })
@@ -78,30 +87,26 @@ router.put(
 // Send a DELETE request to /quotes/:id DELETE a quote
 router.delete(
   "/quotes/:id",
-  asyncHandler(async (req, res, next) => {
-    try {
-      const { id } = req.params;
+  Helper.asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
 
-      const quoteToDelete = await getQuote(id);
+    const quoteToDelete = await Records.getQuote(id);
 
-      if (!quoteToDelete) {
-        return res.status(404).json({ error: "Quote not found!!" });
-      }
-
-      await deleteQuote(quoteToDelete);
-
-      res.status(204).end();
-    } catch (e) {
-      next(e);
+    if (!quoteToDelete) {
+      return res.status(404).json({ error: "Quote not found!!" });
     }
+
+    await Records.deleteQuote(quoteToDelete);
+
+    res.status(204).end();
   })
 );
 
 // Send a GET request to /quotes/quote/random to READ (view) a random quote
 router.get(
   "/quotes/quote/random",
-  asyncHandler(async (req, res, next) => {
-    const quote = await getRandomQuote();
+  Helper.asyncHandler(async (req, res, next) => {
+    const quote = await Records.getRandomQuote();
 
     res.status(201).json(quote);
   })
